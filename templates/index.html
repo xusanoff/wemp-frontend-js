@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<title>JavaScript Test – 40 savol</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background:#f1f5f9;
+    padding:20px;
+}
+.container {
+    max-width:900px;
+    margin:auto;
+    background:#fff;
+    padding:25px;
+    border-radius:10px;
+    box-shadow:0 10px 20px rgba(0,0,0,0.1);
+}
+h1 {
+    text-align:center;
+    margin-bottom:30px;
+}
+.question {
+    margin-bottom:20px;
+}
+.question h3 {
+    margin-bottom:8px;
+}
+label {
+    display:block;
+    margin:5px 0;
+    cursor:pointer;
+}
+button {
+    display:block;
+    margin:30px auto;
+    padding:12px 25px;
+    font-size:16px;
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+}
+button:hover {
+    background:#1e40af;
+}
+.result {
+    text-align:center;
+    font-size:20px;
+    font-weight:bold;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>JavaScript Test (40 savol)</h1>
+    <form id="quiz"></form>
+    <button type="button" onclick="checkAnswers()">Natijani ko‘rish</button>
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+const questions = [
+{q:"JavaScript qaysi turdagi til?",o:["Markup","Styling","Programming","Database"],a:2},
+{q:"JavaScript kim tomonidan yaratilgan?",o:["Bill Gates","Brendan Eich","Elon Musk","Mark Zuckerberg"],a:1},
+{q:"JavaScript fayl kengaytmasi?",o:[".java",".js",".jsx",".script"],a:1},
+{q:"let qaysi scope da ishlaydi?",o:["Global","Block","Function","Module"],a:1},
+{q:"const bilan e’lon qilingan o‘zgaruvchi?",o:["O‘zgarmaydi","Global bo‘ladi","O‘chadi","Null bo‘ladi"],a:0},
+{q:"typeof null natijasi?",o:["null","object","undefined","number"],a:1},
+{q:"Array qaysi belgi bilan yoziladi?",o:["{}","()","[]","<>"],a:2},
+{q:"Object qaysi belgi bilan yoziladi?",o:["[]","()","{}","<>"],a:2},
+{q:"Array uzunligini aniqlash?",o:["size","count","length","total"],a:2},
+{q:"push() nima qiladi?",o:["O‘chiradi","Oxiriga qo‘shadi","Boshiga qo‘shadi","Qidiradi"],a:1},
+
+{q:"pop() nima qiladi?",o:["Boshidan o‘chiradi","Oxiridan o‘chiradi","Qo‘shadi","Almashtiradi"],a:1},
+{q:"shift() nima qiladi?",o:["Oxiridan o‘chiradi","Boshidan o‘chiradi","Qo‘shadi","Saralaydi"],a:1},
+{q:"unshift() nima qiladi?",o:["Oxiriga qo‘shadi","Boshiga qo‘shadi","O‘chiradi","Qidiradi"],a:1},
+{q:"Function nima?",o:["O‘zgaruvchi","Ma’lumot","Qayta ishlatiladigan kod","Style"],a:2},
+{q:"Arrow function belgisi?",o:["->","=>","==","::"],a:1},
+{q:"return vazifasi?",o:["Chop etadi","Qiymat qaytaradi","To‘xtatadi","O‘chiradi"],a:1},
+{q:"if qachon ishlaydi?",o:["Har doim","Shart true bo‘lsa","Shart false bo‘lsa","Loop ichida"],a:1},
+{q:"else qachon ishlaydi?",o:["True bo‘lsa","False bo‘lsa","Har doim","Funksiyada"],a:1},
+{q:"for nimaga ishlatiladi?",o:["Shart","Loop","Object","Style"],a:1},
+{q:"while loop qachon ishlaydi?",o:["Bir marta","Shart true bo‘lsa","False bo‘lsa","Hech qachon"],a:1},
+
+{q:"break nima qiladi?",o:["Davom ettiradi","Loopni to‘xtatadi","Qiymat beradi","Yuklaydi"],a:1},
+{q:"continue nima qiladi?",o:["Loopni to‘xtatadi","Keyingi aylanishga o‘tadi","Qiymat qaytaradi","O‘chiradi"],a:1},
+{q:"DOM nimani anglatadi?",o:["Data Object","Document Object Model","Design Object Model","Digital Object"],a:1},
+{q:"Elementni id bilan olish?",o:["querySelector","getElementById","getClass","select"],a:1},
+{q:"querySelector nima qaytaradi?",o:["Array","Node","Birinchi element","Hammasi"],a:2},
+{q:"addEventListener nima qiladi?",o:["Style beradi","Hodisa qo‘shadi","O‘chiradi","Yuklaydi"],a:1},
+{q:"click hodisasi?",o:["hover","keydown","click","scroll"],a:2},
+{q:"setTimeout nima qiladi?",o:["Takrorlaydi","Kechiktiradi","To‘xtatadi","O‘chiradi"],a:1},
+{q:"setInterval nima qiladi?",o:["Bir marta","Takrorlaydi","O‘chiradi","Kutadi"],a:1},
+
+{q:"JSON nimaga ishlatiladi?",o:["Style","Ma’lumot almashish","Dizayn","Animatsiya"],a:1},
+{q:"fetch nima?",o:["Loop","API so‘rov","Array","Function"],a:1},
+{q:"Promise nechta holatga ega?",o:["2","3","4","5"],a:1},
+{q:"Promise holatlari?",o:["open/close","pending/fulfilled/rejected","true/false","start/end"],a:1},
+{q:"async nima qiladi?",o:["Sekinlashtiradi","Asinxron qiladi","To‘xtatadi","Yuklaydi"],a:1},
+{q:"await qayerda ishlaydi?",o:["Global","Loop","async function","Object"],a:2},
+{q:"localStorage qayerda saqlanadi?",o:["Server","Brauzer","Database","RAM"],a:1},
+{q:"undefined nimani bildiradi?",o:["Qiymat yo‘q","0","false","null"],a:0}
+];
+
+const quiz = document.getElementById("quiz");
+
+questions.forEach((item,i)=>{
+    const div=document.createElement("div");
+    div.className="question";
+    div.innerHTML=`<h3>${i+1}. ${item.q}</h3>`+
+        item.o.map((opt,idx)=>`
+            <label>
+                <input type="radio" name="q${i}" value="${idx}">
+                ${opt}
+            </label>
+        `).join("");
+    quiz.appendChild(div);
+});
+
+function checkAnswers(){
+    let score=0;
+    questions.forEach((q,i)=>{
+        const sel=document.querySelector(`input[name="q${i}"]:checked`);
+        if(sel && Number(sel.value)===q.a) score++;
+    });
+    const percent=Math.round((score/questions.length)*100);
+    document.getElementById("result").innerHTML=
+        `Natija: ${score}/${questions.length} <br> Foiz: ${percent}%`;
+}
+</script>
+
+</body>
+</html>
